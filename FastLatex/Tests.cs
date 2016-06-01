@@ -10,10 +10,12 @@ namespace FastLatex
     [TestFixture]
     class Latex_should
     {
-    	[TestCase("A * B", @"A \cdot B")]
+    	[TestCase("A*B", @"A \cdot B")]
     	[TestCase("A + B", "A + B")]
-        [TestCase("A * B * C", @"A \cdot B \cdot C")]
-        [TestCase("A * !B", @"A \cdot \bar{B}")]
+        [TestCase("A*B*C", @"A \cdot B \cdot C")]
+        [TestCase("A*!B", @"A \cdot  \overline{B} ")]
+        [TestCase("!(F(x))",@" \overline{F(x)} ")]
+        [TestCase("!(A + F(x) + B)",@" \overline{A + F(x) + B} ")]
         public void replace_operators(string given, string result)
     	{
     		// Arrange
@@ -24,8 +26,8 @@ namespace FastLatex
     		Assert.AreEqual(result, newText);
     	}
 
-    	[TestCase("A * B", "\\(A \\cdot B\\)")]
-    	[TestCase("!A", @"\(\bar{A}\)")]
+    	[TestCase("A*B", "\\(A \\cdot B\\)")]
+    	[TestCase("!A", @"\( \overline{A} \)")]
         public void give_latex_from_text(string given, string result)
     	{
     		// Arrange

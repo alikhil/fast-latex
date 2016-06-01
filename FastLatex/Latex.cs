@@ -15,11 +15,13 @@ namespace FastLatex
         {
             Operators = new Dictionary<string, string>()
             {
-                [$"({Regex.Escape("*")})"] = "\\cdot",
-                [$@"\!(\w)"] = @"\bar{$1}",
-                [$@"\!(\([^\(\)][^\(\)]+\))"] = @"\overline{$1}",
-                ["->"] = @"\to",
-                ["<-"] = @"\gets"
+                [$"({Regex.Escape("*")})"] = @" \cdot ",
+                [@"\!(\w)"] = @" \overline{$1} ",
+                [@"\!\(([^\(\)]*\([^\(\)]*\)?[^\(\)]*)\)"] = @" \overline{$1} ",
+                ["->"] = @" \to ",
+                ["<-"] = @" \gets ",
+                [">="] = @" \geq ",
+                ["<="] = @" \leq "
             };
             var operatorsFromFile = TryToGetFromFile();
             foreach (var latex in operatorsFromFile)
