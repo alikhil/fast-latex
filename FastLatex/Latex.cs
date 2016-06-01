@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace FastLatex
@@ -15,8 +17,32 @@ namespace FastLatex
             {
                 [$"({Regex.Escape("*")})"] = "\\cdot",
                 [$@"\!(\w)"] = @"\bar{$1}",
-                [$@"\!(\([^\(][^\(]+\))"] = @"\overline{$1}"
+                [$@"\!(\([^\(\)][^\(\)]+\))"] = @"\overline{$1}",
+                ["->"] = @"\to",
+                ["<-"] = @"\gets"
             };
+            var operatorsFromFile = TryToGetFromFile();
+            foreach (var latex in operatorsFromFile)
+                Operators.Add(latex.From, latex.To);
+        }
+
+        private static List<Sublatex> TryToGetFromFile()
+        {
+            var result = new List<Sublatex>();
+            if (File.Exists("additions.fast"))
+            {
+                var file = File.ReadAllText("additions.fast");
+                try
+                {
+                    result = JsonConvert.DeserializeObject<List<Sublatex>>(file);
+                }
+                catch (Exception e)
+                {
+                    File.WriteAllText("log.txt", JsonConvert.SerializeObject(e));
+                }
+
+            }
+            return result;
         }
 
         public Latex(string latexText)
@@ -70,5 +96,16 @@ namespace FastLatex
         }
 
         
+    }
+
+    internal class Sublatex
+    {
+        public string From;
+        public string To;
+        public Sublatex(string from, string to)
+        {
+            From = from;
+            To = to;
+        }
     }
 }
